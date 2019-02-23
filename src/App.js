@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import './App.css';
 
-import SearchBar from './components/SearchBar'
+import SearchBar from './components/SearchBar/';
+import BookList from './components/BookList';
 
 class App extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class App extends Component {
   }
 
   handleSearchSubmit() {
+    // if the same value was already requested from the API, no need to call it back
     if (this.state.searchValue === this.state.valueSended) return;
     console.log("Sending \"" + this.state.searchValue + "\" to the API...");
     this.setState({
@@ -52,7 +54,7 @@ class App extends Component {
             </Col>
           </Row>
           <Row>
-            <h1>Book List</h1>
+            <BookList />
           </Row>
         </Container>
       </div>
