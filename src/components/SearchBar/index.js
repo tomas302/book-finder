@@ -17,13 +17,14 @@ class SearchBar extends React.Component {
 
     render() {
         return <InputGroup>
-            <Input value={this.props.value} onKeyPress={this.handleKeyPress} onChange={this.props.onChangeHandle} placeholder="Search by book title or author..." />
+            <Input className="search-bar-input" value={this.props.value} onKeyPress={this.handleKeyPress} onChange={this.props.onChangeHandle} placeholder="Search by book title or author..." />
+            <InputGroupAddon addonType="append" className="search-bar-cross">
+                <Button onClick={this.props.clearHandle} close />
+            </InputGroupAddon>
             <InputGroupAddon addonType="append">
                 <Button onClick={this.props.onSearchHandle} className="search-bar-button" color="success">Search</Button>
             </InputGroupAddon>
-            <InputGroupAddon addonType="append" style={{ width: "0px" }}>
-                <Button onClick={this.props.clearHandle} className="search-bar-cross" close />
-            </InputGroupAddon>
+            
         </InputGroup>;
     }
 }

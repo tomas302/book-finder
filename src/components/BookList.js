@@ -3,12 +3,28 @@ import { Row, Col } from 'reactstrap';
 import BookCard from './BookCard/';
 
 const BookList = (props) => {
-    return <div>
-        <Row>
-            <Col sm="12" md="6"><BookCard /></Col>
-            <Col sm="12" md="6"><BookCard /></Col>
-        </Row>
-    </div>
+    let books = [];
+    console.log(props.books);
+    for (let i = 0; i < props.books.length; i++) {
+        let volumeInfo = props.books[i].volumeInfo;
+        let thumbnail = (volumeInfo.imageLinks) ? volumeInfo.imageLinks.thumbnail : "http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif";
+        let title = volumeInfo.title;
+        let author = (volumeInfo.authors !== undefined) ? volumeInfo.authors[0] : "Unknown";
+        let publisher = (volumeInfo.publisher) ? volumeInfo.publisher : "Unknown";
+        let link = volumeInfo.infoLink;
+        books.push(<Col sm="12" md="6">
+            <BookCard 
+                image={thumbnail}
+                title={title}
+                author={author}
+                publisher={publisher}
+                link={link}
+            />
+        </Col>);
+    }
+    return <Row>
+        {books}
+    </Row>
 };
 
 export default BookList;

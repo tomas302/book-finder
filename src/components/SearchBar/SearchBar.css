@@ -1,10 +1,28 @@
-.search-bar-button {
-    border-top-right-radius: 4px !important;
-    border-bottom-right-radius: 4px !important;
+.search-bar-input {
+    height: 40px;
+    border-right: 0px;
 }
 
 .search-bar-cross {
-    position: relative;
-    right: 100px;
-    bottom: 3px;
+    background-color: #fff !important;
+    height: 38px;
+    align-self: center;
+}
+
+.search-bar-cross button {
+    padding-right: 7px;
+    padding-left: 7px;
+    padding-bottom: 5px;
+}
+
+.search-bar-cross button:focus {
+    outline: 0;
+    border: none;
+    -moz-outline-style: none;
+    
+}
+
+.search-bar-button {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
 }
