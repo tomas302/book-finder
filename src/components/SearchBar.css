@@ -1,0 +1,10 @@
+.search-bar-button {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+}
+
+.search-bar-cross {
+    position: relative;
+    right: 100px;
+    bottom: 3px;
+}

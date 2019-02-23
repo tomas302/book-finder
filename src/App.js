@@ -1,25 +1,60 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { Container, Row, Col } from 'reactstrap';
 import './App.css';
 
+import SearchBar from './components/SearchBar'
+
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchValue: '',
+      valueSended: ''
+    };
+    
+    this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
+    this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
+  }
+
+  handleSearchBarChange(e) {
+    let regex = /[^\w\s\-_,.;:()]+/g;
+    let value = e.target.value.replace(regex, "");
+    this.setState({
+      searchValue: value
+    });
+  }
+
+  handleSearchSubmit() {
+    if (this.state.searchValue === this.state.valueSended) return;
+    console.log("Sending \"" + this.state.searchValue + "\" to the API...");
+    this.setState({
+      valueSended: this.state.searchValue
+    });
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Container>
+          <Row>
+            <Col>
+              <h1>BOOK FINDER</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs="12" md={{ size: 10, offset: 1 }}>
+              <SearchBar
+                value={this.state.searchValue}
+                onChangeHandle={this.handleSearchBarChange}
+                onSearchHandle={this.handleSearchSubmit}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <h1>Book List</h1>
+          </Row>
+        </Container>
       </div>
     );
   }
