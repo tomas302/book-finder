@@ -29,6 +29,12 @@
     right: 50px;
 }
 
+@media only screen and (max-width: 575px) {
+    .book-card {
+      margin-right: 15px;
+    }
+}
+
 @media only screen and (max-width: 470px) {
     .book-card {
       justify-content: center;
