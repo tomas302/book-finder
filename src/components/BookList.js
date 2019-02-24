@@ -4,7 +4,6 @@ import BookCard from './BookCard/';
 
 const BookList = (props) => {
     let books = [];
-    console.log(props.books);
     for (let i = 0; i < props.books.length; i++) {
         let volumeInfo = props.books[i].volumeInfo;
         let thumbnail = (volumeInfo.imageLinks) ? volumeInfo.imageLinks.thumbnail : "http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif";
@@ -14,6 +13,7 @@ const BookList = (props) => {
         let link = volumeInfo.infoLink;
         books.push(<Col xs="12" lg="6">
             <BookCard 
+                key={i}
                 image={thumbnail}
                 title={title}
                 author={author}
@@ -22,7 +22,7 @@ const BookList = (props) => {
             />
         </Col>);
     }
-    return <Row>
+    return <Row style={{marginBottom: 50}}>
         {books}
     </Row>
 };

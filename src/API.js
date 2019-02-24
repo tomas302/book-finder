@@ -7,9 +7,16 @@ const searchBooks = async (text) => {
     queryUrl += "&key=" + apiKey;
     queryUrl += "&projection=lite&printType=books&orderBy=relevance";
     let books;
+    let error;
     await axios.get(queryUrl).then(result => {
         books = result.data.items;
+    }).catch(err => {
+        error = err;
     });
+    if (error) throw error;
+    if (!books) {
+        books = [];
+    }
     return books;
 };
 
