@@ -18,10 +18,15 @@ class App extends Component {
       valueSended: '',
       error: ''
     };
+
+    // with the format: "query1/query2/query3"
+    if (localStorage.getItem('last10Queries') === null)
+      localStorage.setItem('last10Queries', "");
     
     this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
     this.handleClearSearch = this.handleClearSearch.bind(this);
+    this.addNewQuery = this.addNewQuery.bind(this);
   }
 
   handleSearchBarChange(e) {
@@ -53,6 +58,7 @@ class App extends Component {
       if (!this.state.waitingForApi) {
         return;
       }
+      this.addNewQuery();
       this.setState({ books: books, waitingForApi: false })
     }).catch(error => {
       if (!this.state.waitingForApi) {
@@ -77,14 +83,35 @@ class App extends Component {
     });
   }
 
+  // method for handling adding to the last 10 queries list
+  addNewQuery() {
+    let last10Queries = localStorage.getItem('last10Queries').split("/");
+    // we check if the query already exists in the list, if it does, we remove it from its current index and position it in the first place
+    let alreadyExistent = (query, i) => {
+      if (query === this.state.valueSended) {
+        last10Queries.splice(i, 1);
+        last10Queries.unshift(query);
+        localStorage.setItem('last10Queries', last10Queries.join("/").replace(/[/]$/, ""));
+        return true;
+      }
+      return false;
+    };
+    if (last10Queries.some(alreadyExistent)) return;
+    // if it doesn't, we make space if needed, we added to the beggining and we save it
+    if (last10Queries.length === 10)
+      last10Queries.pop();
+    last10Queries.unshift(this.state.valueSended);
+    localStorage.setItem('last10Queries', last10Queries.join("/").replace(/[/]$/, ""));
+  }
+
   render() {
     let contents;
     if (this.state.error !== '') {
       let error = "There was an error";
-      if (this.state.error === 'Timed out') error = "Error: cannot reach the server"; 
+      if (this.state.error === 'Timed out') error = "Error: cannot reach the server";
       contents = <Col xs="12"><Alert color="danger"><h3>{error}</h3></Alert></Col>;
     } else if (this.state.waitingForApi) {
-      contents = <Col xs="12"><Alert color="secondary"><h3><i class="fas fa-spinner"></i> Loading...</h3></Alert></Col>;
+      contents = <Col xs="12"><Alert color="secondary"><h3><i className="fas fa-spinner"></i> Loading...</h3></Alert></Col>;
     } else if (this.state.books.length === 0) {
       if (this.state.valueSended !== '') {
         contents = <Col xs="12"><Alert color="warning"><h3>Nothing found</h3></Alert></Col>;
@@ -113,7 +140,7 @@ class App extends Component {
             </Col>
           </Row>
           <Row>
-            { contents }
+            {contents}
           </Row>
         </Container>
       </div>
