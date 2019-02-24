@@ -5,14 +5,14 @@ import './BookCard.css';
 
 const BookCard = (props) => {
     return <Card className="book-card">
-        <CardImg src={ props.image } />
+        <CardImg width={200} src={ props.image } />
         <CardBody>
           <CardTitle><b>{ props.title }</b></CardTitle>
           <CardText>
               By: { props.author }<br />
               Published by: { props.publisher }
           </CardText>
-          <Button color="success" onClick={() => window.location.href = props.link}>See this Book</Button>
+          <Button color="success" className="btn-lg" onClick={() => window.open(props.link, '_blank') }>See this Book</Button>
         </CardBody>
     </Card>;
 };

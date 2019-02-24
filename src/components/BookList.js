@@ -12,7 +12,7 @@ const BookList = (props) => {
         let author = (volumeInfo.authors !== undefined) ? volumeInfo.authors[0] : "Unknown";
         let publisher = (volumeInfo.publisher) ? volumeInfo.publisher : "Unknown";
         let link = volumeInfo.infoLink;
-        books.push(<Col sm="12" md="6">
+        books.push(<Col xs="12" lg="6">
             <BookCard 
                 image={thumbnail}
                 title={title}
