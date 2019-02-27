@@ -119,7 +119,11 @@ class SearchBar extends React.Component {
     }
 
     getLastQueries(dropdown) {
-        let last10Queries = localStorage.getItem("last10Queries").split("/");
+        let last10Queries = localStorage.getItem("last10Queries");
+        if (last10Queries === "") {
+            return [];
+        }
+        last10Queries = last10Queries.split("/");
         for (let i = 0; i < last10Queries.length; i++) {
             if (this.props.value === "" || last10Queries[i].includes(this.props.value)) {
                 if (i === this.state.pastQuerySelected) {
@@ -133,10 +137,18 @@ class SearchBar extends React.Component {
                 last10Queries[i] = null;
             }
         }
+        if (dropdown)
+            last10Queries.push(<DropdownItem style={{ color: "blue", textDecoration: "underline" }} onClick={() => { localStorage.setItem("last10Queries", ""); this.setState({ focused: false }); } } key={last10Queries.length}>Clear history...</DropdownItem>);
         return last10Queries;
     }
     render() {
         let last10Queries = this.getLastQueries(true);
+        let dropdown = (last10Queries.length === 0) ? null : <Dropdown isOpen={this.state.focused} toggle={() => { }} >
+                            <DropdownToggle style={{ display: "none" }} />
+                            <DropdownMenu className="search-dropdown">
+                                {last10Queries}
+                            </DropdownMenu>
+                        </Dropdown>;
         return <div ref={this.setWrapperRef}>
             <InputGroup>
                 <Input className="search-bar-input" value={this.props.value} onKeyDown={this.handleKeyDown} onChange={this.props.onChangeHandle} placeholder="Search by book title or author..." />
@@ -148,12 +160,7 @@ class SearchBar extends React.Component {
                 </InputGroupAddon>
             </InputGroup>
 
-            <Dropdown isOpen={this.state.focused} toggle={() => { }} >
-                <DropdownToggle style={{ display: "none" }} />
-                <DropdownMenu className="search-dropdown">
-                    {last10Queries}
-                </DropdownMenu>
-            </Dropdown>
+            {dropdown}
         </div>;
     }
 }
