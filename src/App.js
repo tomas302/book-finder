@@ -19,7 +19,7 @@ class App extends Component {
       error: ''
     };
 
-    // with the format: "query1/query2/query3"
+    // with the format: "mostRecentQuery/query2/olderQuery"
     if (localStorage.getItem('last10Queries') === null)
       localStorage.setItem('last10Queries', "");
     
@@ -27,6 +27,7 @@ class App extends Component {
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
     this.handleClearSearch = this.handleClearSearch.bind(this);
     this.addNewQuery = this.addNewQuery.bind(this);
+    this.handlePastQueryClick = this.handlePastQueryClick.bind(this);
   }
 
   handleSearchBarChange(e) {
@@ -37,10 +38,11 @@ class App extends Component {
     });
   }
 
-  handleSearchSubmit() {
+  handleSearchSubmit(searchVal) {
+    let searchValue = (searchVal !== undefined) ? searchVal : this.state.searchValue;
     // if the same value was already requested from the API, no need to call it back
-    if (this.state.searchValue === this.state.valueSended || this.state.waitingForApi) return;
-    if (this.state.searchValue === '') {
+    if (searchValue === this.state.valueSended || this.state.waitingForApi) return;
+    if (searchValue === '') {
       this.setState({
         valueSended: '',
         waitingForApi: false
@@ -51,22 +53,25 @@ class App extends Component {
       this.setState({ error: '' });
     }
     this.setState({
-      valueSended: this.state.searchValue,
+      valueSended: searchValue,
       waitingForApi: true
     });
-    searchBooks(this.state.searchValue).then(books => {
+    searchBooks(searchValue).then(books => {
       if (!this.state.waitingForApi) {
         return;
       }
       this.addNewQuery();
       this.setState({ books: books, waitingForApi: false })
+      if (this.currentTimeout) clearTimeout(this.currentTimeout);
     }).catch(error => {
       if (!this.state.waitingForApi) {
         return;
       }
       this.setState({ error: error, waitingForApi: false, valueSended: '' });
+      if (this.currentTimeout) clearTimeout(this.currentTimeout);
     });
-    setTimeout(() => {
+    if (this.currentTimeout) clearTimeout(this.currentTimeout);
+    this.currentTimeout = setTimeout(() => {
       if (this.state.waitingForApi) {
         this.setState({ waitingForApi: false, error: 'Timed out', valueSended: '' });
       }
@@ -89,6 +94,8 @@ class App extends Component {
     // we check if the query already exists in the list, if it does, we remove it from its current index and position it in the first place
     let alreadyExistent = (query, i) => {
       if (query === this.state.valueSended) {
+        let regex = /[^\w\s\-_,.;:()]+/g;
+        query = query.replace(regex, "");
         last10Queries.splice(i, 1);
         last10Queries.unshift(query);
         localStorage.setItem('last10Queries', last10Queries.join("/").replace(/[/]$/, ""));
@@ -102,6 +109,15 @@ class App extends Component {
       last10Queries.pop();
     last10Queries.unshift(this.state.valueSended);
     localStorage.setItem('last10Queries', last10Queries.join("/").replace(/[/]$/, ""));
+  }
+
+  handlePastQueryClick(index) {
+    let regex = /[^\w\s\-_,.;:()]+/g;
+    let queryClicked = localStorage.getItem('last10Queries').split("/")[index].replace(regex, "");
+    this.setState({
+      searchValue: queryClicked
+    });
+    this.handleSearchSubmit(queryClicked);
   }
 
   render() {
@@ -136,6 +152,7 @@ class App extends Component {
                 onChangeHandle={this.handleSearchBarChange}
                 onSearchHandle={this.handleSearchSubmit}
                 clearHandle={this.handleClearSearch}
+                handlePastQueryClick={this.handlePastQueryClick}
               />
             </Col>
           </Row>
